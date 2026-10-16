@@ -1,0 +1,6 @@
+{
+  "name": "MyMap.co.in - Custom House Floor Plans & 3D Design",
+  "description": "Get your complete custom house floor plan online starting at ₹499/-. Professional 2D architectural CAD drawings, 3D isometric designs, approval-ready floor plans and direct WhatsApp delivery.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
