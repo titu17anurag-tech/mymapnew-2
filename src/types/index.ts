@@ -33,7 +33,9 @@ export interface PricingPlan {
 
 export interface UserRequirement {
   plotLength: number;
+  plotLengthInches: number;
   plotWidth: number;
+  plotWidthInches: number;
   unit: 'ft' | 'meter';
   facing: 'North' | 'East' | 'West' | 'South';
   bhk: '1 BHK' | '2 BHK' | '3 BHK' | '4 BHK' | 'Duplex / Villa';
@@ -45,4 +47,5 @@ export interface UserRequirement {
   clientName: string;
   clientCity: string;
   clientPhone: string;
+  style: 'All Styles' | 'Villa' | 'Modern' | 'Kerala Heritage' | 'Minimalist';
 }

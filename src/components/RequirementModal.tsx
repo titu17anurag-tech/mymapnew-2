@@ -15,7 +15,9 @@ export const RequirementModal: React.FC<RequirementModalProps> = ({
 }) => {
   const [form, setForm] = useState<UserRequirement>({
     plotLength: 40,
+    plotLengthInches: 0,
     plotWidth: 30,
+    plotWidthInches: 0,
     unit: 'ft',
     facing: 'East',
     bhk: '3 BHK',
@@ -27,6 +29,7 @@ export const RequirementModal: React.FC<RequirementModalProps> = ({
     clientName: '',
     clientCity: '',
     clientPhone: '',
+    style: 'All Styles',
   });
 
   const [copied, setCopied] = useState(false);
@@ -34,14 +37,15 @@ export const RequirementModal: React.FC<RequirementModalProps> = ({
 
   if (!isOpen) return null;
 
-  const totalPlotArea = form.plotLength * form.plotWidth;
+  const totalPlotArea = (form.plotLength + form.plotLengthInches / 12) * (form.plotWidth + form.plotWidthInches / 12);
 
   const generatedWhatsAppMessage = `Hello mymap.co.in Architects! 🏠
 I would like to order a House Floor Plan (Only ₹499/-):
-📐 Plot Size: ${form.plotWidth} x ${form.plotLength} ${form.unit} (${totalPlotArea} sq.${form.unit})
+📐 Plot Size: ${form.plotWidth}ft ${form.plotWidthInches}in x ${form.plotLength}ft ${form.plotLengthInches}in (${totalPlotArea.toFixed(2)} sq.${form.unit})
 🧭 Plot Facing: ${form.facing} Facing
 🛏️ Configuration: ${form.bhk}
 🏢 Floors: ${form.floors}
+  🏠 Style: ${form.style}
 ✨ Key Features: ${form.parkingNeeded ? 'Car Parking, ' : ''}${form.poojaRoomNeeded ? 'Pooja Room, ' : ''}${form.vastuPriority ? 'Vastu Compliant' : ''}
 ${form.additionalNotes ? `📝 Notes: ${form.additionalNotes}\n` : ''}${form.clientName ? `👤 Name: ${form.clientName} (${form.clientCity || 'India'})\n` : ''}
 Please send me a sample drawing and discuss my plan on WhatsApp!`;
@@ -95,9 +99,9 @@ Please send me a sample drawing and discuss my plan on WhatsApp!`;
             <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
               1. Plot Dimensions (Frontage & Depth)
             </label>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
               <div>
-                <span className="text-xs text-slate-500 mb-1 block">Front Width (ft)</span>
+                <span className="text-xs text-slate-500 mb-1 block">Width (ft)</span>
                 <input
                   type="number"
                   value={form.plotWidth}
@@ -107,7 +111,19 @@ Please send me a sample drawing and discuss my plan on WhatsApp!`;
                 />
               </div>
               <div>
-                <span className="text-xs text-slate-500 mb-1 block">Depth / Length (ft)</span>
+                <span className="text-xs text-slate-500 mb-1 block">Width (in)</span>
+                <input
+                  type="number"
+                  min="0"
+                  max="11"
+                  value={form.plotWidthInches}
+                  onChange={(e) => setForm({ ...form, plotWidthInches: Number(e.target.value) })}
+                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-400"
+                  placeholder="0"
+                />
+              </div>
+              <div>
+                <span className="text-xs text-slate-500 mb-1 block">Length (ft)</span>
                 <input
                   type="number"
                   value={form.plotLength}
@@ -116,14 +132,24 @@ Please send me a sample drawing and discuss my plan on WhatsApp!`;
                   placeholder="40"
                 />
               </div>
-              <div className="col-span-2 sm:col-span-1 flex flex-col justify-end">
-                <div className="px-3 py-2 bg-slate-100 rounded-lg text-center border border-slate-200">
-                  <span className="text-xs text-slate-500 block">Total Plot Area</span>
-                  <span className="text-sm font-bold text-slate-900 font-mono">
-                    {totalPlotArea} sq.ft
-                  </span>
-                </div>
+              <div>
+                <span className="text-xs text-slate-500 mb-1 block">Length (in)</span>
+                <input
+                  type="number"
+                  min="0"
+                  max="11"
+                  value={form.plotLengthInches}
+                  onChange={(e) => setForm({ ...form, plotLengthInches: Number(e.target.value) })}
+                  className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm font-semibold text-slate-900 focus:outline-none focus:ring-2 focus:ring-amber-400"
+                  placeholder="0"
+                />
               </div>
+            </div>
+            <div className="mt-3 px-3 py-2 bg-slate-100 rounded-lg text-center border border-slate-200">
+              <span className="text-xs text-slate-500 block">Total Plot Area</span>
+              <span className="text-sm font-bold text-slate-900 font-mono">
+                {totalPlotArea.toFixed(2)} sq.ft
+              </span>
             </div>
           </div>
 
@@ -186,10 +212,28 @@ Please send me a sample drawing and discuss my plan on WhatsApp!`;
             </div>
           </div>
 
+          {/* House Style */}
+          <div>
+            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
+              5. Preferred Style
+            </label>
+            <select
+              value={form.style}
+              onChange={(e) => setForm({ ...form, style: e.target.value as any })}
+              className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm font-medium text-slate-900 bg-white focus:outline-none focus:ring-2 focus:ring-amber-400"
+            >
+              <option value="All Styles">All Styles</option>
+              <option value="Villa">Villa</option>
+              <option value="Modern">Modern</option>
+              <option value="Kerala Heritage">Kerala Heritage</option>
+              <option value="Minimalist">Minimalist</option>
+            </select>
+          </div>
+
           {/* Special Requirements */}
           <div>
             <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">
-              5. Priority Elements
+              6. Priority Elements
             </label>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
               <label className="flex items-center gap-2 p-2.5 rounded-lg border border-slate-200 bg-slate-50 cursor-pointer hover:bg-slate-100 transition-colors">
